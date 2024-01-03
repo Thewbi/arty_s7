@@ -1,0 +1,18 @@
+{
+  "name": "microblaze_app",
+  "type": "HOST",
+  "platform": "C:\\Users\\wolfg\\dev\\vitis\\workspace\\platform\\export\\platform\\platform.xpfm",
+  "domain": "standalone_microblaze_0",
+  "cpuInstance": "microblaze_0",
+  "cpuType": "microblaze",
+  "os": "standalone",
+  "configuration": {
+    "componentType": "HOST",
+    "hostToolchainConfigurations": []
+  },
+  "domainRealName": "standalone_microblaze_0",
+  "applicationFlow": "EMBEDDED",
+  "previousBuildStatusMap": {
+    "hw": "SUCCESS"
+  }
+}
