@@ -1,0 +1,303 @@
+Using the peripherals of the ARTY S7 board in vivado can be done in several ways.
+The official tutorials are about the softcore processor MicroBlaze and the use of
+predefined IPs (Intelectual Properties) for each peripheral, that the softcore microprocessor
+can access via the AXI bus interface.
+
+An IP block is a predefined module that is usable in Verilog or VHDL and performs a 
+predefined function. Every peripheral on the ARTY S7 has a IP block that can be 
+used in Vivado.
+
+A softcore microcontroller is a microcontroller defined as a ready made ip block that
+is then part of the bitstream and will be running on the FPGA itself. Because every
+microcontroller needs software that it can run, there is the need to write a embedded
+application to run on the software microcontroller. This is done using the SDK in the past.
+The SDK has been replaced by Vitis.
+
+Going the MicroBlaze + AXI route is a three step process.
+1. Add a microblaze softcore IP and add all periperal IPs in Vivado. Then generate a 
+wrapper file for the setup.
+2. Take the setup file into Vitis and implement the microcontroller application that
+the microcontroller will execute.
+3. Compile everything (Vivado Project + Vitis Application) into a single bitstream 
+and program the FPGA.
+
+https://digilent.com/reference/vivado/getting-started-with-ipi/2018.2
+
+1. Open Vivado (ML Edition)
+1. Create New Project: File > Project > New
+1. Create a RTL project > Do not specify any sources > Do not add constraints
+1. Switch to the boards tab > Reload new board support packages first so that the s7 shows up in the list > Select arty s7 25 board 
+1. Finish
+
+1. Open the IP Integrator tool > Flow Navigator on the left side of the window. 
+Expand the IP Integrator tab and select Create Block Design.
+1. Design name: PmodSWT
+
+1. Open the "Board" Tab
+1. Find GPIO > "4 Push Buttons"
+1. Open the context menu on the "4 Push Buttons" entry.
+1. Select "Connect Board Component..."
+1. In the dialog select: AXI GPIO > GPIO (not GPIO 2) > Click OK.
+
+1. Open the "Board" Tab
+1. Find GPIO > "4 LEDs"
+1. Open the context menu on the "4 LEDs" entry.
+1. Select "Connect Board Component..."
+1. In the dialog select: Connect to existing IP > axi_gpio_0 > GPIO2 > Click OK.
+
+For the ARTY S7 board, MicroBlaze is used.
+
+1. Open the "Board" Tab
+1. Find Clocks > "System Clock"
+1. Open the context menu on the "System Clock" entry.
+1. Select "Connect Board Component..."
+1. In the dialog set the checkbox: clock_CLK_IN1 > Click OK. 
+
+Select the "clocking wizard" block > open the context menu > Customize Block
+In the Board tab, make sure that sys clock is selected in the CLK_IN1 dropdown.
+In the Board tab, make sure reset is selected in the EXT_RESET_IN drop-down.
+
+
+
+Select the Output Clocks tab. On this page there are several different options for how to configure the clocking wizard. For the purposes of this guide, the reset type needs to be configured, and a single 100MHz clock needs to be generated.
+Make sure that the clk_out1 box is checked and that it's Requested Frequency is 100.000 (MHz).
+Depending on how the specific board's reset button works, select Active Low or Active High for the Reset Polarity. The Basys 3 and Cmod A7 are the only boards that use an active high reset polarity at the time of writing.
+Click Finish to save changes and continue.
+
+
+
+Click Run Connection Automation in the green bar at the top of the block design diagram pane.
+Make sure that the reset entry the list on the left-hand side of the Run Connection Automation 
+dialog is checked and selected. With this box checked, Vivado will automatically connect the 
+reset component selected in the Board pane of the Clocking Wizard Configuration dialog to the 
+clocking wizard, as specified in the Board tab of the Clocking Wizard configuration dialog.
+Click OK to continue.
+
+
+
+In the Board tab, right click on USB UART and select "Connect Board Component".
+In the dialog that pops up, select the UART port of an AXI Uartlite IP core.
+The IP that gets instantiated in the design can be customized to set it's baud rate, along with some other options. 
+For the purposes of this guide, the default settings are fine.
+
+
+Click the Add IP button () and search for 'MicroBlaze'. 
+Select MicroBlaze from the list of results and press Enter on the keyboard to continue.
+
+
+
+
+
+
+https://digilent.com/reference/programmable-logic/guides/vitis-create-app
+
+Instead of File > Launch SDK use Tools > Launch Vitis
+
+Vitis is the IDE for writing code that runs on the MicroBlaze processor.
+
+In Vitis, first open a workspace: Open Workspace > Select a folder.
+
+Create Application Component
+
+Create Platform Component > HERE YOU CAN SELECT THE PmodSWT_wrapper.xsa file that was generated in vivado: C:\Users\wolfg\dev\vivado\pmod\PmodSWT_wrapper.xsa
+
+
+Once the platform is created, you have to create a software project that utilizes that platform.
+File > New Component > Application > Component Name: microblaze_app
+On the Domain Wizard Page, select standalone_microblaze_0.
+
+
+Into the source folder, add a main.c file:
+
+
+```
+//AXI GPIO driver
+#include "xgpio.h"
+
+//send data over UART
+#include "xil_printf.h"
+
+//information about AXI peripherals
+#include "xparameters.h"
+
+int main()
+{
+	XGpio gpio;
+	u32 btn, led;
+	
+	XGpio_Initialize(&gpio, 0);
+
+	XGpio_SetDataDirection(&gpio, 2, 0x00000000); // set LED GPIO channel tristates to All Output
+	XGpio_SetDataDirection(&gpio, 1, 0xFFFFFFFF); // set BTN GPIO channel tristates to All Input
+	
+	while (1)
+	{
+		btn = XGpio_DiscreteRead(&gpio, 1);
+		
+		if (btn != 0) // turn all LEDs on when any button is pressed
+			led = 0xFFFFFFFF;
+		else
+			led = 0x00000000;
+
+		XGpio_DiscreteWrite(&gpio, 2, led);
+		
+		xil_printf("\rbutton state: %08x", btn);
+	}
+}
+```
+
+
+
+MenuBar > Vitis > Program Device > Generate > Program
+
+Now in the debug perspective, you have to start a debugging session, otherwise the Microblaze Processor is halted!
+
+You can use YAT and open a terminal on the USB serial port (COM5) using 9600 baud and CR as line break.
+The application keeps printing the push button states.
+
+Pushing any of the push buttons will light all LEDs.
+
+
+
+
+
+== VGA with PMOD ==
+
+=== Create a new Project, Add Constraints ===
+
+1. Create a new RTL project in vivado.
+
+1. Add the constraint file Arty-S7-25-Master.xdc from here: https://github.com/Digilent/digilent-xdc
+1. Activate and configure the PMOD headers JC and JD
+
+```
+## PMOD Header JC
+set_property -dict { PACKAGE_PIN U15   IOSTANDARD LVCMOS33 } [get_ports { VGA_RED[0] }];
+set_property -dict { PACKAGE_PIN V16   IOSTANDARD LVCMOS33 } [get_ports { VGA_RED[1] }];
+set_property -dict { PACKAGE_PIN U17   IOSTANDARD LVCMOS33 } [get_ports { VGA_RED[2] }];
+set_property -dict { PACKAGE_PIN U18   IOSTANDARD LVCMOS33 } [get_ports { VGA_RED[3] }];
+set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports { VGA_BLUE[0] }];
+set_property -dict { PACKAGE_PIN P13   IOSTANDARD LVCMOS33 } [get_ports { VGA_BLUE[1] }];
+set_property -dict { PACKAGE_PIN R13   IOSTANDARD LVCMOS33 } [get_ports { VGA_BLUE[2] }];
+set_property -dict { PACKAGE_PIN V14   IOSTANDARD LVCMOS33 } [get_ports { VGA_BLUE[3] }];
+
+## PMOD Header JD
+set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports { VGA_GREEN[0] }];
+set_property -dict { PACKAGE_PIN U12   IOSTANDARD LVCMOS33 } [get_ports { VGA_GREEN[1] }];
+set_property -dict { PACKAGE_PIN V13   IOSTANDARD LVCMOS33 } [get_ports { VGA_GREEN[2] }];
+set_property -dict { PACKAGE_PIN T12   IOSTANDARD LVCMOS33 } [get_ports { VGA_GREEN[3] }];
+set_property -dict { PACKAGE_PIN T13   IOSTANDARD LVCMOS33 } [get_ports { VGA_HS }];
+set_property -dict { PACKAGE_PIN R11   IOSTANDARD LVCMOS33 } [get_ports { VGA_VS }];
+```
+
+=== Create a 25.2 MHZ clock IP Block ===
+Explanation: https://www.youtube.com/watch?v=ngkpvMaNapA
+
+1. Click on Project Manager > IP Catalog > FPGA Features and Design > Clocking > Clocking Wizard
+1. Double click Clocking Wizard
+In the Board tab, make sure that sys clock is selected in the CLK_IN1 dropdown.
+In the Board tab, make sure reset is selected in the EXT_RESET_IN drop-down.
+1. Go to the Clocking Options Tab. Select MMCM. The input clock is 100 Mhz because the ARTY S7 has a 100 Mhz chrystal.
+1. Go to the Output Clocks tab. For clk_out1, set requested to 25.200
+1. Click OK
+1. In the Generate Output Products Dialog, select Generate. Wait for the generation and updating to finish.
+1. The result of generation is that in the Sources-View under the Design Sources node, you know have a clk_wiz_0 entry.
+Double Clicking this entry opens the clocking wizard again. You can make changes and regenerate.
+1. Switching to the "IP Sources" Tab inside the Sources-View at the bottom will open a tree of all IPs generated in
+your project. There is a node for the clock wizard called "clk_wiz_0". Opening that node will reveal a "Instantiation Template"
+node. Inside the "Instantiation Template" node, there is a .veo file. This file contains verilog code that can be
+copy pasted to create the clock wizard and use it in your verilog code.
+
+```
+ clk_wiz_0 instance_name
+   (
+    // Clock out ports
+    .clk_out1(clk_out1),     // output clk_out1
+    // Status and control signals
+    .reset(reset), // input reset
+    .locked(locked),       // output locked
+   // Clock in ports
+    .clk_in1(clk_in1)      // input clk_in1
+);
+```
+
+=== Enable the 100Mhz system clock in the constraints file ===
+
+tip: This does not work with the 100 Mhz clock. There will be an error during implementation!
+Use the 12 Mhz clock instead.
+
+The clock wizard is a factory for clocks. In order to function it needs an input clock.
+Since we have configured the input clock to be 100 Mhz inside the clock wizard IP block dialog,
+we now have to provide that 100 Mhz input clock to the verilog code (copied from the instantiation template)
+that instantiates the wizard.
+
+Edit the Arty-S7-25-Master.xdc constraint file and find the two lines that define the 100 Mhz system clock and remove
+the comments to enable those lines.
+
+```
+set_property -dict { PACKAGE_PIN R2    IOSTANDARD SSTL135 } [get_ports { CLK100MHZ }]; #IO_L12P_T1_MRCC_34 Sch=ddr3_clk[200]
+create_clock -add -name sys_clk_pin -period 10.000 -waveform {0 5.000}  [get_ports { CLK100MHZ }];
+```
+
+After adding the 100 Mhz system clock in the constraints file, the name used in the constraints file (CLK100MHZ) is now
+available inside all verilog code to be used as the system clock.
+
+
+
+=== Enable the 12Mhz system clock in the constraints file ===
+
+The clock wizard is a factory for clocks. In order to function it needs an input clock.
+Since we have configured the input clock to be 12 Mhz inside the clock wizard IP block dialog,
+we now have to provide that 12 Mhz input clock to the verilog code (copied from the instantiation template)
+that instantiates the wizard.
+
+Edit the Arty-S7-25-Master.xdc constraint file and find the two lines that define the 12 Mhz system clock and remove
+the comments to enable those lines.
+
+```
+set_property -dict { PACKAGE_PIN F14   IOSTANDARD LVCMOS33 } [get_ports { CLK12MHZ }]; #IO_L13P_T2_MRCC_15 Sch=uclk
+create_clock -add -name sys_clk_pin -period 83.333 -waveform {0 41.667} [get_ports { CLK12MHZ }];
+
+```
+
+After adding the 12 Mhz system clock in the constraints file, the name used in the constraints file (CLK12MHZ) is now
+available inside all verilog code to be used as the system clock.
+
+
+
+
+
+=== Enable switch zero in the constraints file ==
+
+
+=== Instantiate the clock wizard ==
+
+1. File > Add Sources > Add or create design sources > Create File > Verilog > Name: top. Finish.
+input: CLK100MHZ
+The input name must match the clock name specified in the constraints file!
+
+```
+TODO: add code here
+```
+
+
+
+=== Add display_480p.sv ===
+
+https://github.com/projf/projf-explore/blob/main/lib/display/display_480p.sv
+
+1. Download display_480p.sv from the link above.
+1. File > Add Sources > Add or create design sources > Add Files > Select the downloaded display_480p.sv file.
+
+
+== Generate the bit stream ==
+
+SYNTHESIS > Run Synthesis
+
+
+
+
+ERROR:
+
+[DRC PDRC-34] MMCM_adv_ClkFrequency_div_no_dclk: 
+The computed value 6300.000 MHz (CLKIN1_PERIOD, net clk_in1_clk_wiz_0) for the VCO operating frequency of the MMCME2_ADV site MMCME2_ADV_X1Y0 (cell clock_wizard/inst/mmcm_adv_inst) falls outside the operating range of the MMCM VCO frequency for this device (600.000 - 1200.000 MHz). The computed value is (CLKFBOUT_MULT_F * 1000 / (CLKINx_PERIOD * DIVCLK_DIVIDE)). Please run update_timing to update the MMCM settings. If that does not work, adjust either the input period CLKINx_PERIOD (10.000000), multiplication factor CLKFBOUT_MULT_F (63.000000) or the division factor DIVCLK_DIVIDE (1), in order to achieve a VCO frequency within the rated operating range for this device.
