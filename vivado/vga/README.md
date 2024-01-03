@@ -134,6 +134,10 @@ create_clock -add -name sys_clk_pin -period 83.333 -waveform {0 41.667} [get_por
 Then in the configuration dialog of the clocking wizard, use the 12 Mhz clock as an input.
 As an output clock, specify a 25.200 Mhz clock and use this clock as the clock for the VGA timing generation.
 
+In the HDL code where the clocking wizard is instantiated, the input clk signal has to match exactly 
+with the name used in the constraints file. The connection is made by name. Make sure the name matches
+exactly using the exact sequence of letters in the exact casing used in the contstraints file and the top.v file!
+
 A video on how to use the configuration dialog is here: https://www.youtube.com/watch?v=ngkpvMaNapA
 
 ## Next steps
