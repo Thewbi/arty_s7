@@ -43,7 +43,7 @@ Some pins remain not connected (N/C) because they are not needed for the UART in
 |3v3         	|VCC (pin 6)|
 |N/C         	|Status (pin 7) (not connected)|
 |3v3         	|RST (pin 8) (Connected to 3v3 because connecting RST to GND performs a reset!)|
-||N/C         	|NC (pin 9) (not connected)|
+|N/C         	|NC (pin 9) (not connected)|
 |N/C         	|NC (pin 10) (not connected)|
 |N/C         	|GND (pin 11) (not connected)|
 |N/C         	|VCC (pin 12) (not connected)|
@@ -154,7 +154,7 @@ The default behaviour of the BT2 is to start the SPP RFCOMM server.
 To disble this behaviour and to enable the HCI (Host Controller Interface) defined
 in the Bluetooth specification, it is necessary to change a value in flash. 
 
-Flash on the BT2 is accessible via SPI. To get access to the SPI interface, 
+The Flash on the BT2 is accessible via SPI. To get access to the SPI interface, 
 a header bar has to be soldered onto the BT2 module.
 
 https://www.cl.cam.ac.uk/~jrrk2/docs/pmod-bt/
