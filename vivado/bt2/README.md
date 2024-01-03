@@ -62,6 +62,24 @@ In Data mode, the BT2 runs it's internal bluetooth stack and per default starts 
 that provides a SPP connection. Using the android app Serial Bluetooth Terminal, you can talk
 to the spp server!
 
+To transfer bytes between the BT2 and the terminal emulator, connect to the BT2 using the
+Serial Bluetooth Terminal and connect to the UART interface of the BT2 using the YAT terminal
+emulator or any other terminal emulator (TeraTerm, Hyperterminal, ...).
+
+Type test into the Serial Bluetooth Terminal and send it. The text will appear in the terminal
+emulator. Type text into the terminal emulator and send it, the text will appear in the 
+Serial Bluetooth Terminal.
+
+For application development, provide a UART implementation that supports hardware flow control,
+enable a Pmod header using a constraint file. The plugin the pmod and connect your UART implementation
+to it. process the incoming bytes as needed or send data out as needed.
+
+If you want to disable the internal bluetooth stack and just access the BT2 RF backend, disable
+the default bluetooth stack and enable the HCI interface as described here: https://www.cl.cam.ac.uk/~jrrk2/docs/pmod-bt/
+This can be usefull to connect the BT2 to the BlueZ Bluetooth Stack of a linux operating system for example.
+
+Also check the HCI section in this document.
+
 
 # Command Mode
 Normal payload is transmitted in Data Mode. 
