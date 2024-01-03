@@ -6,8 +6,8 @@ This project is an implementation of the strategy outlined in jugals article on 
 
 ## Links
 
-Implementation strategy: https://community.element14.com/technologies/fpga-group/b/blog/posts/getting-started-with-the-arty-s7-and-the-vga-pmod-expansion-module
-VGA timing generation: https://github.com/projf/projf-explore/blob/main/lib/display/display_480p.sv
+* Implementation strategy: https://community.element14.com/technologies/fpga-group/b/blog/posts/getting-started-with-the-arty-s7-and-the-vga-pmod-expansion-module
+* VGA timing generation: https://github.com/projf/projf-explore/blob/main/lib/display/display_480p.sv
 
 ## IP Blocks
 
@@ -20,8 +20,8 @@ The wizard will generate the HDL code for the IP block and it provides an instan
 That template can be copy and pasted into a HDL file to create the IP block.
 
 There is a IP block for the VGA Pmod by Digilent readily available in Vivado.
-This project uses HDL code to use the VGA Pmod since this seems a little bit more interesting than
-just copy and pasting generated code.
+This project however uses custom HDL code to use the VGA Pmod and it does not use the IP block,
+since this seems a little bit more worthwhile to learn about VGA than just to copy and paste generated code.
 
 ## Strategy of using the Digilent VGA Pmod
 
@@ -96,7 +96,33 @@ monitors are really picky on what signals they want to accept.
 ## Configuring the clocking wizard
 
 The clocking wizard is an IP block that can be configured using the clocking wizard dialog 
-inside Vivado. The only approach that worked for me without any errors is to enable the 
+inside Vivado. The configuration dialog will create the clocking wizard. The clocking wizard
+is not a clock itself, infact it is more like a factory that will generate clocks.
+
+To create a clock of a specific amount of Mhz, configure the clocking wizard to produce this
+frequency. The clocking wizard can generate more than a single clock depending on how many
+clocks you configure inside the clocking wizard dialog. Once the clocking wizard is instantiated, 
+the user has access to the actual clocks and can pass them to other modules:
+
+```
+wire  clk_25M;
+    
+clk_wiz_0 clock_wizard
+   (
+	// Clock out ports
+	.clk_out1(clk_25M),     // output clk_out1
+   // Clock in ports
+	.clk_in1(CLK12MHZ)      // input clk_in1
+);
+```
+
+In the short snippet above, you can see that the clocking wizard produces a .clk_ou1 signal which is
+the clock that you have configured earlier in the configuration dialog. The clocking wizard also has
+a input signal .clk_in1. Here the clocking wizard expects a reference clock of the exact frequency 
+that has been configured on the input tab of the configuration dialog. You have to specify such a
+reference clock. Without reference, the clocking wizard can not derive other clocks!
+
+The only approach that worked for me without any errors is to enable the 
 12 MHz clock using the constraints file:
 
 ```
