@@ -1,4 +1,4 @@
-# arty_s7, Digilent PMOD without IP Block
+# Arty S7 25, Digilent PMOD without IP Block
 
 This project produces VGA output on a Arty S7 25 using the Digilent PMOD without using an IP Block for the Digilent VGA PMod.
 
@@ -92,6 +92,23 @@ on the ARTY S7 PCB, so you can easily identify headers JC and JD.
 This is all you have to know about this example.
 If this exampe does not work on your monitor, maybe try a second VGA monitor. Sometimes
 monitors are really picky on what signals they want to accept.
+
+## Configuring the clocking wizard
+
+The clocking wizard is an IP block that can be configured using the clocking wizard dialog 
+inside Vivado. The only approach that worked for me without any errors is to enable the 
+12 MHz clock using the constraints file:
+
+```
+## Clock Signals
+set_property -dict { PACKAGE_PIN F14   IOSTANDARD LVCMOS33 } [get_ports { CLK12MHZ }]; #IO_L13P_T2_MRCC_15 Sch=uclk
+create_clock -add -name sys_clk_pin -period 83.333 -waveform {0 41.667} [get_ports { CLK12MHZ }];
+```
+
+Then in the configuration dialog of the clocking wizard, use the 12 Mhz clock as an input.
+As an output clock, specify a 25.200 Mhz clock and use this clock as the clock for the VGA timing generation.
+
+A video on how to use the configuration dialog is here: https://www.youtube.com/watch?v=ngkpvMaNapA
 
 ## Next steps
 
