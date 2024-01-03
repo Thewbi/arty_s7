@@ -150,7 +150,7 @@ the data is feed into the VGA Pmod based on the x and y signals that the VGA sig
 outputs.
 
 An extended version of the frame buffer approach is to use double buffering to prevent flicker
-and screen tearing. The application draws into the deactivated buffer which the active buffer
+and screen tearing. The application draws into the deactivated buffer while the active buffer
 is drawn for the current frame. Once the frame has been drawn, the buffers are switched.
 
 Using this approach, the VGA signals are always in a complete ready state and the buffer
