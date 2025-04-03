@@ -1,0 +1,80 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Sun Mar 30 16:51:08 2025
+[*]
+[dumpfile] "C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\multi_cycle_riscv_cpu_rebuild\gtkwave\build\aout.vcd"
+[savefile] "C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\multi_cycle_riscv_cpu_rebuild\gtkwave\GTKWaveConfig.gtkw"
+[timestart] 24
+[size] 1536 841
+[pos] -35 -35
+*-2.100000 35 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top_testbench.
+[treeopen] top_testbench.dut.
+[treeopen] top_testbench.dut.rvmulti.
+[treeopen] top_testbench.dut.rvmulti.ctr.
+[treeopen] top_testbench.dut.rvmulti.dp.
+[sst_width] 280
+[signals_width] 291
+[sst_expanded] 1
+[sst_vpaned_height] 495
+@28
+top_testbench.dut.rvmulti.dp.AdrSrc
+top_testbench.dut.rvmulti.dp.IRWrite
+top_testbench.dut.rvmulti.ctr.RegWrite
+top_testbench.dut.rvmulti.dp.alu.Z
+top_testbench.dut.rvmulti.dp.PCWrite
+@22
+top_testbench.dut.rvmulti.ctr.PC[31:0]
+top_testbench.dut.rvmulti.dp.ReadData[31:0]
+top_testbench.dut.rvmulti.dp.Instr[31:0]
+top_testbench.dut.rvmulti.ctr.op[6:0]
+top_testbench.dut.rvmulti.ctr.oldOp[6:0]
+@28
+top_testbench.dut.rvmulti.ctr.funct3[2:0]
+@22
+top_testbench.dut.rvmulti.ctr.funct7[6:0]
+top_testbench.dut.rvmulti.dp.PC[31:0]
+top_testbench.dut.rvmulti.dp.ram.a[31:0]
+top_testbench.dut.rvmulti.dp.ram.rd[31:0]
+@28
+top_testbench.dut.rvmulti.dp.rf.we3
+@22
+top_testbench.dut.rvmulti.dp.rf.a1[4:0]
+top_testbench.dut.rvmulti.dp.rf.a2[4:0]
+top_testbench.dut.rvmulti.dp.rf.a3[4:0]
+top_testbench.dut.rvmulti.dp.rf.wd3[31:0]
+top_testbench.dut.rvmulti.dp.data[31:0]
+top_testbench.dut.rvmulti.ctr.current_state[4:0]
+top_testbench.dut.rvmulti.ctr.next_state[4:0]
+@28
+top_testbench.dut.rvmulti.ctr.ALUSrcA[1:0]
+@22
+top_testbench.dut.rvmulti.dp.alu.a_in[31:0]
+@28
+top_testbench.dut.rvmulti.ctr.ALUSrcB[1:0]
+@23
+top_testbench.dut.rvmulti.dp.alu.b_in[31:0]
+@28
+top_testbench.dut.rvmulti.ctr.ALUControl[2:0]
+@22
+top_testbench.dut.rvmulti.dp.ALUOut[31:0]
+top_testbench.dut.rvmulti.dp.Result[31:0]
+top_testbench.dut.rvmulti.dp.aluResult.d[31:0]
+top_testbench.dut.rvmulti.dp.aluResult.q[31:0]
+@28
+top_testbench.dut.rvmulti.ctr.ImmSrc[2:0]
+@22
+top_testbench.dut.rvmulti.dp.ext.immext[31:0]
+top_testbench.dut.rvmulti.ctr.op[6:0]
+@28
+top_testbench.dut.rvmulti.ctr.funct3[2:0]
+@22
+top_testbench.dut.rvmulti.ctr.funct7[6:0]
+@28
+top_testbench.dut.rvmulti.dp.ext.immsrc[2:0]
+top_testbench.dut.rvmulti.dp.InstrFF.clk
+top_testbench.dut.rvmulti.dp.InstrFF.en
+top_testbench.dut.rvmulti.dp.resetn
+top_testbench.dut.rvmulti.dp.ResultSrc[1:0]
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7s25csga324-1" LaunchTime="1704067659">
+<GenRun Id="synth_1" LaunchPart="xc7s25csga324-1" LaunchTime="1743616638">
   <File Type="PA-TCL" Name="blinky.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="blinky_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="blinky_reports.tcl"/>
   <File Type="RDS-RDS" Name="blinky.vds"/>
+  <File Type="RDS-PROPCONSTRS" Name="blinky_drc_synth.rpt"/>
   <File Type="RDS-UTIL" Name="blinky_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="blinky_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="blinky.dcp"/>
@@ -26,7 +26,7 @@
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
     <Filter Type="Constrs"/>
-    <File Path="$PPRDIR/../../../Downloads/digilent-xdc-master/digilent-xdc-master/Arty-S7-25-Master.xdc">
+    <File Path="$PPRDIR/Arty-S7-25-Master.xdc">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -43,9 +43,7 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2023">
-      <Desc>Vivado Synthesis Defaults</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2023"/>
     <Step Id="synth_design"/>
   </Strategy>
 </GenRun>

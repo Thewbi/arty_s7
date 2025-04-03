@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="top_testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="top_testbench" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="64.380 ns"></ZoomStartTime>
+      <ZoomEndTime time="205.431 ns"></ZoomEndTime>
+      <Cursor1Time time="81.067 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="404"></NameColumnWidth>
+      <ValueColumnWidth column_width="160"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/top_testbench/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/led_green" type="logic">
+      <obj_property name="ElementShortName">led_green</obj_property>
+      <obj_property name="ObjectShortName">led_green</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/D1" type="logic">
+      <obj_property name="ElementShortName">D1</obj_property>
+      <obj_property name="ObjectShortName">D1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/D2" type="logic">
+      <obj_property name="ElementShortName">D2</obj_property>
+      <obj_property name="ObjectShortName">D2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/D3" type="logic">
+      <obj_property name="ElementShortName">D3</obj_property>
+      <obj_property name="ObjectShortName">D3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/resetn" type="logic">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/dp/PC" type="array">
+      <obj_property name="ElementShortName">PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/ctr/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/ctr/resetn" type="logic">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/dp/ram/inst/dina" type="array">
+      <obj_property name="ElementShortName">dina[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dina[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/dp/ram/wea" type="array">
+      <obj_property name="ElementShortName">wea[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wea[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/dp/ram/addra" type="array">
+      <obj_property name="ElementShortName">addra[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addra[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_testbench/dut/rvmulti/dp/ram/douta" type="array">
+      <obj_property name="ElementShortName">douta[31:0]</obj_property>
+      <obj_property name="ObjectShortName">douta[31:0]</obj_property>
+   </wvobject>
+</wave_config>
