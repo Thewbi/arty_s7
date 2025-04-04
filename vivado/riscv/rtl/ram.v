@@ -120,8 +120,8 @@ module ram(
             // // 9.999.998
             // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
             // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
-            // RAM[32'd08] = 32'h009893b7; //               lui x15, 2441
-            // RAM[32'd12] = 32'h67e38393; //               addi x15, x15, 1662
+            // RAM[32'd08] = 32'h009893b7; //               lui x7, 2441
+            // RAM[32'd12] = 32'h67e38393; //               addi x7, x15, 1662
             // RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0xC     # if (x5 == x7) jump to loop_end
 
             // RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1

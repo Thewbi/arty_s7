@@ -2,9 +2,10 @@ module riscv_multi(
 
     // clock and reset
     input wire clk,
-    input wire resetn//,
+    input wire fast_clk,
+    input wire resetn,
 
-//    output wire [31:0]      toggle_value,
+    output wire [31:0]      toggle_value//,
 
     // // DEBUG UART
     // output reg [7:0]   tx_Data,
@@ -87,6 +88,7 @@ module riscv_multi(
 
         // clock and reset
         clk,
+        fast_clk,
         resetn,
 
         // output
@@ -109,9 +111,9 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite //,        // write enable for the register file
+        RegWrite,        // write enable for the register file
 
-//        toggle_value
+        toggle_value
     );
 
 endmodule

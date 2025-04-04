@@ -66,3 +66,15 @@ There is a glitch with .coe files and the simulator. When the .coe file is updat
 https://adaptivesupport.amd.com/s/question/0D52E00006iHjGmSAK/simulation-with-bram-ip-coe-file-updated-but-simulated-contents-do-not?language=en_US
 
 To solve that issue, delete the project .sim directory [..] and also delete the project.ip_user_files directory and re-launching the sim.
+
+I'd suggest that you reset IP output product prior to regenerating IP output product.
+When IP customization is not changed, the previous IP cached result will be referenced. In simulation, .coe is not used directly. Instead, the associated .mif file is used. So if IP output product is actually untouched, there's no difference in simulation.
+
+Thanks Patocarr & Graces! Resetting the IP products was the key. For those not experienced with the procedure, don't become discouraged when the option is greyed out in the Sources/Hierarchy tab. 
+1. Switch to IP Sources, 
+2. right click on the Block Design containing the IP, (or the IP itself if not contained in a BD) 
+3. and select Reset Output Products.
+At first I couldn't figure out how to reset the output products so I tried just deleting the sim & ip_user_files directories. When the ip_user_files directory was recreated the updated COE file was present but the corresponding MIF file contained the old data (viewable in a text editor). Vivado appears to have a bug that allows these two files to be out of sync. Since 2019.2.1 is a pretty recent version, I'll see if I can submit a bug report about this.
+Thanks All!
+
+Another tipp: The .ceo parser seems to parse the comments! It is advisable to not place syntactically incorrect hex numbers or other code into the comments! The parser will parse the comments and fail which prevents the generation of IPs!

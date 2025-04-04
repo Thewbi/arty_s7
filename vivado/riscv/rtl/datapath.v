@@ -2,6 +2,7 @@ module datapath(
 
     // clock and resetn
     input   wire            clk,
+    input   wire            fast_clk,
     input   wire            resetn,
 
     // output
@@ -25,10 +26,10 @@ module datapath(
     input  wire [1:0]       ALUSrcB,        // decides which line goes into the ALU B parameter input
     input  wire [1:0]       ALUSrcA,        // decides which line goes into the ALU A parameter input
     input  wire [2:0]       ImmSrc,         // enable sign extension of the immediate value
-    input  wire             RegWrite//,       // write enable for the register file
+    input  wire             RegWrite,       // write enable for the register file
 
     // output
-//    output wire [31:0]      toggle_value    // RAM toggle signal
+    output wire [31:0]      toggle_value    // RAM toggle signal
 );
 
     wire [31:0]     PC;
@@ -62,7 +63,7 @@ module datapath(
     //ram ram(clk,   /*resetn,*/    MemWrite,       adr,        WriteData,              ReadData/*, toggle_value*/);
     
     blk_mem_gen_0 ram (
-      .clka(clk),            // input wire clka
+      .clka(fast_clk),            // input wire clka
       .rsta(!resetn),            // input wire rsta
       .ena(resetn),              // input wire ena
       .wea({4{MemWrite}}),              // input wire [3 : 0] wea
@@ -145,7 +146,9 @@ module datapath(
 
         // output
         .rd1(RD1),                // [out] the output where the value from register a1 appears
-        .rd2(RD2)                 // [out] the output where the value from register a2 appears
+        .rd2(RD2),                 // [out] the output where the value from register a2 appears
+        
+        .toggle_value(toggle_value)
     );
                                         //   d    q
     flopr #(32) Data_RD1(/*3'b001,*/ clk, resetn, RD1, register_output_A);

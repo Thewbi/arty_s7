@@ -268,7 +268,6 @@ module controller (
             end
 
             // S2 "Fetch_2" State
-
             FetchState_2:
             begin
 
@@ -288,7 +287,7 @@ module controller (
                 ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
             end
 
-            // S3 "Decode" State
+            // S3 "Decode" State (For JAL, the jump target address is computed here) 
             DecodeState:
             begin
                 // $display("");
@@ -329,6 +328,7 @@ module controller (
 
                 // PCWrite = 1'b0;
                 AdrSrc = 1'bx;
+                //AdrSrc = 1'b0;
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 ResultSrc = 2'bxx;
@@ -377,7 +377,7 @@ module controller (
                 // $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
 
                 // PCWrite = 1'b0;
-                AdrSrc = 1'bx;
+                //AdrSrc = 1'bx;
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
@@ -664,38 +664,38 @@ module controller (
             DecodeState:
             begin
 
-                $display("[controller DecodeState] op: %b", newOp);
-                if ((newOp == 7'b0000011) || (newOp == 7'b0100011)) // lw or sw
+                $display("[controller DecodeState] op: %b", op);
+                if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
                     $display("[controller] goto DecodeState -> MemAddrState");
                     next_state = MemAddrState; // 0x04
                 end
-                else if (newOp == 7'b0110011) // R-Type
+                else if (op == 7'b0110011) // R-Type
                 begin
                     $display("[controller] goto DecodeState -> ExecuteRState");
                     next_state = ExecuteRState;
                 end
-                else if (newOp == 7'b0010011) // I-Type ALU (xori, addi, ...)
+                else if (op == 7'b0010011) // I-Type ALU (xori, addi, ...)
                 begin
                     $display("[controller] goto DecodeState -> ExecuteIState");
                     next_state = ExecuteIState; // 0x0A
                 end
-                else if (newOp == 7'b1101111) // JAL
+                else if (op == 7'b1101111) // JAL
                 begin
                     $display("[controller] goto DecodeState -> JALState");
-                    next_state = JALState;
+                    next_state = JALState; // 0x0B
                 end
-                else if (newOp == 7'b1100011) // BEQ // 7'b1100011 == 63dec
+                else if (op == 7'b1100011) // BEQ // 7'b1100011 == 63dec
                 begin
                     $display("[controller] goto DecodeState -> BEQState");
                     next_state = BEQState; // 0x0D
                 end
-                else if (newOp == 7'b0000000) // nop
+                else if (op == 7'b0000000) // nop
                 begin
                     $display("[controller] goto DecodeState -> FetchState_1 for nop");
                     next_state = FetchState_1;
                 end
-                else if (newOp == 7'b0110111) // lui
+                else if (op == 7'b0110111) // lui
                 begin
                     $display("[controller] goto DecodeState -> LuiState for lui");
                     next_state = LUI_STATE;

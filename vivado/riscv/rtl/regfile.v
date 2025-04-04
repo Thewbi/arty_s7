@@ -15,7 +15,10 @@ module regfile(
     input   wire [31:0]     wd3,    // data value to write
 
     output  wire [31:0]     rd1,    // the output where the value from register a1 appears
-    output  wire [31:0]     rd2     // the output where the value from register a2 appears
+    output  wire [31:0]     rd2,     // the output where the value from register a2 appears
+    
+    // output
+    output wire [31:0]      toggle_value    // RAM toggle signal
 );
 
     reg [31:0] rf[31:0];
@@ -119,6 +122,8 @@ module regfile(
     // register 0 hardwired to 0 (if a1 or a2 or both are register 0, return a hardcoded 0)
     assign rd1 = (a1 != 0) ? rf[a1] : 0;
     assign rd2 = (a2 != 0) ? rf[a2] : 0;
+    
+    assign toggle_value = rf[32'h06];
 
     // always @(a1, a2)
     // begin

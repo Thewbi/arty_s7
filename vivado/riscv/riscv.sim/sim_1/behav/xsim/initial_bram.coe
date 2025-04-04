@@ -1,21 +1,3 @@
-//            RAM[32'h00] = 32'h00000293; // 0x00 inita:        addi x5, x0, 0x0
-//            RAM[32'h04] = 32'h00000313; // 0x04              addi x6, x0, 0x0
-//            RAM[32'h08] = 32'h000003b7; // 0x08              lui x7, 0
-//            RAM[32'h0C] = 32'h00238393; // 0x0C              addi x7, x7, 2
-//            RAM[32'h10] = 32'h00728663; // 0x10 loop_head:    beq x5, x7, 12/0xC     # if (x5 == x7) jump to loop_end (pc relative jump of +12 bytes)
-
-//            RAM[32'h14] = 32'h00128293; // 0x14              addi x5, x5, 1
-//            RAM[32'h18] = 32'hff5ff06f; // 0x18               jal x0, -12          # jal loop head (pc relative jump back -8 bytes)
-//            RAM[32'h1C] = 32'h03402303; // 0x1C loop_end:     lw x6, 52(x0)
-//            RAM[32'h20] = 32'h00134313; // 0x20              xori x6, x6, 1
-//            RAM[32'h24] = 32'h02602a23; // 0x24              sw x6, 52(x0)
-
-//            RAM[32'h28] = 32'hfd9ff06f; // 0x28              jal x0, -40         # jal inita (pc relative, -40 bytes back to the beginning of the appplication)
-//            RAM[32'h2C] = 32'h00000000; // 0x2C
-//            RAM[32'h30] = 32'h00000000; // 0x30
-//            RAM[32'h34] = 32'h00000000; // toggle here.
-//            RAM[32'h38] = 32'h00000000;
-
 memory_initialization_radix=16;
 memory_initialization_vector=
 00000293,
@@ -24,10 +6,8 @@ memory_initialization_vector=
 00238393,
 00728663,
 00128293,
-ff5ff06f,
+ff9ff06f,
 03402303,
 00134313,
 02602a23,
 fd9ff06f;
-
-

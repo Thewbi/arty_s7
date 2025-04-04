@@ -25,12 +25,12 @@ module top(
     // memory mapped I/O
     //
 
-//    wire [31:0] toggle_value;
+    wire [31:0] toggle_value;
 
     always @(posedge CLK12MHZ)
     begin
-        //led_green = toggle_value[0];
-        led_green = slow_clock;
+        led_green = toggle_value[0];
+        //led_green = slow_clock;
         D3 = slow_clock;
     end
 
@@ -41,8 +41,8 @@ module top(
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
     //reg [24:0] rststate = 0; // long reset
-    
-    reg [4:0] rststate = 0; // for the testbench / simulation
+    //reg [15:0] rststate = 0; // long reset
+    reg [4:0] rststate = 0; // short reset for the testbench / simulation
 
     always @(posedge CLK12MHZ)
     begin
@@ -137,13 +137,15 @@ module top(
 
     riscv_multi rvmulti(
         // clock and reset
-        CLK12MHZ, // for simulation
+        //CLK12MHZ, // for simulation
+        slow_clock_counter[1],
+        slow_clock_counter[0],
         //slow_clock, // for design
         
-        resetn //, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
+        resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
 
         // output
-//        toggle_value,
+        toggle_value
 
         // DEBUG UART
         //tx_byte,
