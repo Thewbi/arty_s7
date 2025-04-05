@@ -25,7 +25,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/dev/fpga/arty_s7/vivado/riscv/riscv.runs/synth_1'
+HD_PWD='C:/dev/fpga/arty_s7/vivado/riscv/riscv.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
@@ -41,4 +41,8 @@ EAStep()
      fi
 }
 
-EAStep vivado -log top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
+# pre-commands:
+/bin/touch .init_design.begin.rst
+EAStep vivado -log top.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source top.tcl -notrace
+
+

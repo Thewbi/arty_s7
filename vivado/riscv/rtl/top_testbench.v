@@ -1,4 +1,5 @@
 `timescale 1ns/1ns
+//`timescale 1us/1us
 
 module top_testbench();
 
@@ -39,7 +40,8 @@ module top_testbench();
             //$dumpvars(0, dut);
 
             //#500 $finish();
-            #8000 $finish();
+            //#8000 $finish();
+            //#32000 $finish();
          end
 
 

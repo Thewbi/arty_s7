@@ -44,7 +44,7 @@ module aludec(
             7'b0010011: ALUOp = 2'b10; // I–type ALU
             7'b1101111: ALUOp = 2'b00; // jal
             7'b0110111: ALUOp = 2'b00; // lui
-            default: ALUOp = 2'bxx; // ???
+               default: ALUOp = 2'bxx; // ???
         endcase
 
         // if (op == 7'b0000011)
@@ -55,9 +55,9 @@ module aludec(
 
         case (ALUOp)
 
-            2'b00: begin ALUControl = 3'b000; end // addition
+            2'b00: begin ALUControl <= 3'b000; end // addition
 
-            2'b01: begin ALUControl = 3'b001; end // subtraction
+            2'b01: begin ALUControl <= 3'b001; end // subtraction
 
             default: begin
 
@@ -65,25 +65,25 @@ module aludec(
 
                     3'b000: begin
                         if (RtypeSub)
-                            ALUControl = 3'b001; // sub
+                            ALUControl <= 3'b001; // sub
                         else
-                            ALUControl = 3'b000; // add, addi
+                            ALUControl <= 3'b000; // add, addi
                     end
 
                     3'b010:
-                        begin ALUControl = 3'b101; end // slt, slti
+                        begin ALUControl <= 3'b101; end // slt, slti
 
                     3'b100:
-                        begin ALUControl = 3'b101; end // xor, xori
+                        begin ALUControl <= 3'b101; end // xor, xori
 
                     3'b110:
-                        begin ALUControl = 3'b011; end // or, ori
+                        begin ALUControl <= 3'b011; end // or, ori
 
                     3'b111:
-                        begin ALUControl = 3'b010; end // and, andi
+                        begin ALUControl <= 3'b010; end // and, andi
 
                     default:
-                        begin ALUControl = 3'bxxx; end // ???
+                        begin ALUControl <= 3'bxxx; end // ???
 
                 endcase
             end

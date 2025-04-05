@@ -20,6 +20,7 @@ module top(
     //assign slow_clock = slow_clock_counter[16]; // way to fast to see
     assign slow_clock = slow_clock_counter[20]; // quick
     //assign slow_clock = slow_clock_counter[24]; // slow
+    //assign slow_clock = slow_clock_counter[22]; // slow
 
     //
     // memory mapped I/O
@@ -29,9 +30,20 @@ module top(
 
     always @(posedge CLK12MHZ)
     begin
-        led_green = toggle_value[0];
+        //led_green = toggle_value[0];
+        led_green = |toggle_value;
+        //led_green = slow_clock;
+        
         //led_green = slow_clock;
         D3 = slow_clock;
+    end
+    
+    always @(posedge slow_clock)
+    begin
+        D1 = ~D1;
+        D2 = resetn;
+        //D3 = 0;
+        //D4 = 0;
     end
 
     //
@@ -42,9 +54,11 @@ module top(
     wire resetn;
     //reg [24:0] rststate = 0; // long reset
     //reg [15:0] rststate = 0; // long reset
-    reg [4:0] rststate = 0; // short reset for the testbench / simulation
+    //reg [4:0] rststate = 0; // short reset for the testbench / simulation
+    reg [6:0] rststate = 0; // short reset for the testbench / simulation
 
-    always @(posedge CLK12MHZ)
+    always @(posedge CLK12MHZ) // for simulation
+    //always @(posedge slow_clock)
     begin
         rststate <= rststate + !resetn; // once resetn turns to 1, rststate is not incremented any more
     end
@@ -100,9 +114,7 @@ module top(
 
     //
     // UART debug
-    //
-
-    
+    //    
 
     // count up
     always @(posedge CLK12MHZ) begin
@@ -121,15 +133,7 @@ module top(
         //     uart_tx_counter = 0;
         // end
 
-    end
-
-    always @(posedge slow_clock)
-    begin
-        D1 = ~D1;
-        D2 = resetn;
-        //D3 = 0;
-        //D4 = 0;
-    end
+    end    
 
     //
     // RISCV CPU
@@ -138,8 +142,14 @@ module top(
     riscv_multi rvmulti(
         // clock and reset
         //CLK12MHZ, // for simulation
-        slow_clock_counter[1],
-        slow_clock_counter[0],
+        //slow_clock_counter[1],// for simulation
+        //slow_clock_counter[0],// for simulation
+        slow_clock,
+        
+        // fast clock, RAM clock
+        //slow_clock_counter[0], // for simulation
+        CLK12MHZ,
+        
         //slow_clock, // for design
         
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.

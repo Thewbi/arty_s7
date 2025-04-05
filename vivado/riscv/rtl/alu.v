@@ -26,7 +26,7 @@ module alu #(parameter WIDTH = 32) (
                 $display("[ALU] add. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
             // sub
@@ -36,7 +36,7 @@ module alu #(parameter WIDTH = 32) (
                 ALUResult = a_in + (~b_in + 1'b1);
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
 
                 $display("[ALU] sub. Z=%0d", Z);
             end
@@ -48,7 +48,7 @@ module alu #(parameter WIDTH = 32) (
                 ALUResult = a_in & b_in;
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
             // xor, xori
@@ -58,7 +58,7 @@ module alu #(parameter WIDTH = 32) (
                 $display("[ALU] xor. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
             // slt, slti
@@ -71,7 +71,7 @@ module alu #(parameter WIDTH = 32) (
                 ALUResult = a_in < b_in ? 1 : 0;
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
             // or, ori
@@ -81,7 +81,7 @@ module alu #(parameter WIDTH = 32) (
                 ALUResult = a_in | b_in;
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
             default:
@@ -91,7 +91,7 @@ module alu #(parameter WIDTH = 32) (
                 ALUResult = 32'b01010101010101010101010101010101;
 
                 // compute zero
-                Z = (ALUResult == 0);
+                Z <= (ALUResult == 0);
             end
 
         endcase

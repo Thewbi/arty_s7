@@ -62,6 +62,17 @@ module datapath(
     //      clk    resetn,    write enable    addr        data to write           output read data
     //ram ram(clk,   /*resetn,*/    MemWrite,       adr,        WriteData,              ReadData/*, toggle_value*/);
     
+    reg [31:0] toggle_value_reg;
+    
+    always @(fast_clk)
+    begin
+        if (adr == 32'd52)
+        begin
+            toggle_value_reg = WriteData;
+        end
+    end
+    assign toggle_value = toggle_value_reg;
+    
     blk_mem_gen_0 ram (
       .clka(fast_clk),            // input wire clka
       .rsta(!resetn),            // input wire rsta
@@ -83,6 +94,8 @@ module datapath(
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
     flopenr #(32) pcreg(/*3'b000,*/     clk,        resetn,      PCWrite,    Result,     PC);
+    
+    //assign toggle_value = PC;
 
     //                  input A     input B     selector    muxed output
     mux2 #(32) addrmux( PC,         Result,     AdrSrc,     adr);
@@ -132,7 +145,7 @@ module datapath(
 
         // clock write enable
         .clk(clk),                // [in] clock
-//        .resetn(resetn),          // [in] resetn
+        .resetn(resetn),          // [in] resetn
 
         .we3(RegWrite),           // [in] write enable for register 3. if high, register a3 is written with wd3
 
@@ -146,9 +159,9 @@ module datapath(
 
         // output
         .rd1(RD1),                // [out] the output where the value from register a1 appears
-        .rd2(RD2),                 // [out] the output where the value from register a2 appears
+        .rd2(RD2)//,                 // [out] the output where the value from register a2 appears
         
-        .toggle_value(toggle_value)
+        //.toggle_value(toggle_value)
     );
                                         //   d    q
     flopr #(32) Data_RD1(/*3'b001,*/ clk, resetn, RD1, register_output_A);

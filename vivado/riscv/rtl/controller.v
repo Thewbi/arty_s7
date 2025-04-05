@@ -54,6 +54,7 @@ module controller (
     // reg [2:0]   ImmSrc;
     reg         RegWrite;
 
+/*
     // assign o_PCWrite = PCWrite;
     assign o_AdrSrc = AdrSrc;
     assign o_MemWrite = MemWrite;
@@ -64,6 +65,7 @@ module controller (
     assign o_ALUSrcA = ALUSrcA;
     // assign o_ImmSrc = ImmSrc;
     assign o_RegWrite = RegWrite;
+*/
 
     //
     // DEBUG: This will output the current
@@ -171,13 +173,13 @@ module controller (
         if (resetn == 1)
         begin
             $display("[controller] next state");
-            current_state = next_state;
+            current_state <= next_state;
         end
         else
         begin
             $display("[controller] Resetting.");
 
-            current_state = ResetState;
+            current_state <= ResetState;
 
             // // PCWrite = 1'b0;
             // // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
@@ -204,10 +206,131 @@ module controller (
     //
 
     assign o_PCWrite = (Zero && (current_state == BEQState)) || current_state == FetchState_1 || current_state == JALState;
+    
+    assign o_AdrSrc = 
+        (current_state == ResetState) ? 1'b0 :
+        (current_state == FetchState_1) ? 1'b0 :
+        //(current_state == DecodeState) ? 1'bx :
+        (current_state == MemAddrState) ? 1'bx :
+        (current_state == MemReadState) ? 1'b1 :
+        (current_state == MemWBState) ? 1'bx :
+        (current_state == MemWriteState) ? 1'b1 :
+        (current_state == ExecuteRState) ? 1'b0 :
+        (current_state == ALUWriteBackState) ? 1'b0 :
+        (current_state == ExecuteIState) ? 1'b0 :
+        (current_state == JALState) ? 1'bx :
+        (current_state == BEQState) ? 1'b0 :
+        (current_state == LUI_STATE) ? 1'b0 :
+        (current_state == ErrorState) ? 1'bx : 1'b0;
 
+    
+    //assign o_MemWrite = MemWrite;
+    assign o_MemWrite = 
+        (current_state == ResetState) ? 1'b0 :
+        (current_state == FetchState_1) ? 1'b0 :
+        //(current_state == DecodeState) ? 1'b0 :
+        (current_state == MemAddrState) ? 1'b0 :
+        (current_state == MemReadState) ? 1'b0 :
+        (current_state == MemWBState) ? 1'b0 :
+        (current_state == MemWriteState) ? 1'b1 :
+        (current_state == ExecuteRState) ? 1'b0 :
+        (current_state == ALUWriteBackState) ? 1'b0 :
+        (current_state == ExecuteIState) ? 1'b0 :
+        (current_state == JALState) ? 1'b0 :
+        (current_state == BEQState) ? 1'b0 :
+        (current_state == LUI_STATE) ? 1'b0 :
+        (current_state == ErrorState) ? 1'bx : 1'b0;
+        
+    //assign o_IRWrite = IRWrite;
+    assign o_IRWrite = 
+        (current_state == ResetState) ? 1'b1 :
+        (current_state == FetchState_1) ? 1'b1 :
+        (current_state == DecodeState) ? 1'b0 :
+        (current_state == MemAddrState) ? 1'b0 :
+        (current_state == MemReadState) ? 1'b0 :
+        (current_state == MemWBState) ? 1'b0 :
+        (current_state == MemWriteState) ? 1'b0 :
+        (current_state == ExecuteRState) ? 1'b0 :
+        (current_state == ALUWriteBackState) ? 1'b0 :
+        (current_state == ExecuteIState) ? 1'b0 :
+        (current_state == JALState) ? 1'b0 :
+        (current_state == BEQState) ? 1'b0 :
+        (current_state == LUI_STATE) ? 1'b0 :
+        (current_state == ErrorState) ? 1'bx : 1'b0;
+        
+    //assign o_ResultSrc = ResultSrc;
+    assign o_ResultSrc = 
+        (current_state == ResetState) ? 2'b00 :
+        (current_state == FetchState_1) ? 2'b10 :
+        //(current_state == DecodeState) ? 2'bxx :
+        (current_state == MemAddrState) ? 2'bxx :
+        (current_state == MemReadState) ? 2'b00 :
+        (current_state == MemWBState) ? 2'b01 :
+        (current_state == MemWriteState) ? 2'b00 :
+        (current_state == ExecuteRState) ? 2'b00 :
+        (current_state == ALUWriteBackState) ? 2'b00 :
+        (current_state == ExecuteIState) ? 2'b00 :
+        (current_state == JALState) ? 2'b00 :
+        (current_state == BEQState) ? 2'b00 :
+        //(current_state == LUI_STATE) ? 2'bxx :
+        (current_state == ErrorState) ? 2'bxx : 2'b00;
+        
+    //assign o_ALUSrcB = ALUSrcB;
+    assign o_ALUSrcB = 
+        (current_state == ResetState) ? 2'b00 :
+        (current_state == FetchState_1) ? 2'b10 :
+        (current_state == DecodeState) ? 2'b01 :
+        (current_state == MemAddrState) ? 2'b01 :
+        (current_state == MemReadState) ? 2'bxx :
+        (current_state == MemWBState) ? 2'bxx :
+        (current_state == MemWriteState) ? 2'bxx :
+        (current_state == ExecuteRState) ? 2'b00 :
+        (current_state == ALUWriteBackState) ? 2'b00 :
+        (current_state == ExecuteIState) ? 2'b01 :
+        (current_state == JALState) ? 2'b10 :
+        (current_state == BEQState) ? 2'b00 :
+        (current_state == LUI_STATE) ? 2'b10 :
+        (current_state == ErrorState) ? 2'bxx : 2'b00;
+        
+    //assign o_ALUSrcA = ALUSrcA;
+    assign o_ALUSrcA = 
+        (current_state == ResetState) ? 2'b00 :
+        (current_state == FetchState_1) ? 2'b00 :
+        (current_state == DecodeState) ? 2'b01 :
+        (current_state == MemAddrState) ? 2'b10 :
+        (current_state == MemReadState) ? 2'bxx :
+        (current_state == MemWBState) ? 2'bxx :
+        (current_state == MemWriteState) ? 2'bxx :
+        (current_state == ExecuteRState) ? 2'b10 :
+        (current_state == ALUWriteBackState) ? 2'b00 :
+        (current_state == ExecuteIState) ? 2'b10 :
+        (current_state == JALState) ? 2'b01 :
+        (current_state == BEQState) ? 2'b10 :
+        (current_state == LUI_STATE) ? 2'b11 :
+        (current_state == ErrorState) ? 2'bxx : 2'b00;
+        
+    //assign o_RegWrite = RegWrite;
+    assign o_RegWrite = 
+        (current_state == ResetState) ? 1'b0 :
+        (current_state == FetchState_1) ? 1'b0 :
+        //(current_state == DecodeState) ? 1'bx :
+        (current_state == MemAddrState) ? 1'b0 :
+        (current_state == MemReadState) ? 1'b0 :
+        (current_state == MemWBState) ? 1'b1 :
+        (current_state == MemWriteState) ? 1'b0 :
+        (current_state == ExecuteRState) ? 1'b0 :
+        (current_state == ALUWriteBackState) ? 1'b1 :
+        (current_state == ExecuteIState) ? 1'b0 :
+        (current_state == JALState) ? 1'b0 :
+        (current_state == BEQState) ? 1'b0 :
+        (current_state == LUI_STATE) ? 1'b0 :
+        (current_state == ErrorState) ? 1'bx : 1'b0;
+
+/*
     //always @(current_state, resetn)
     //always @(current_state)
     always @(posedge clk)
+    //always @(negedge clk)
     begin
 
         case (current_state)
@@ -220,16 +343,17 @@ module controller (
 
                 // PCWrite = 1'b0;
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
-                AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-                MemWrite = 1'b0; // not writing into memory
-                IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
-                RegWrite = 1'b0;
+                AdrSrc <= 1'b0; // this connects the PC flip flop to the instruction memory
+                MemWrite <= 1'b0; // not writing into memory
+                IRWrite <= 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+                RegWrite <= 1'b0;
                 //ImmSrc = 3'b000; // no immediate extension required
                 // ACTION 2 - increment PC
-                ALUSrcA = 2'b00; // reset
-                ALUSrcB = 2'b00; // reset
+                ALUSrcA <= 2'b00; // reset
+                ALUSrcB <= 2'b00; // reset
                 //ALUControl = 3'b000; // add operation
-                ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+                
+                ResultSrc <= 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
             end
 
             // S1 "Fetch_1" State
@@ -247,15 +371,15 @@ module controller (
 
                 // PCWrite = 1'b1;
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
-                AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-                MemWrite = 1'b0; // not writing into memory
-                IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+                AdrSrc <= 1'b0; // this connects the PC flip flop to the instruction memory
+                MemWrite <= 1'b0; // not writing into memory
+                IRWrite <= 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
 
-                ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+                ResultSrc <= 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
                 // ACTION 2 - increment PC
                 //ALUControl = 3'b000; // add operation
-                ALUSrcB = 2'b10; // hardcoded 4
-                ALUSrcA = 2'b00; // PC
+                ALUSrcB <= 2'b10; // hardcoded 4
+                ALUSrcA <= 2'b00; // PC
 
                 // this is in the book in figure 7.32 on page 425 but it does not work! The PC is not incremented!
                 // ALUControl = 3'bxxx; // add operation
@@ -264,7 +388,7 @@ module controller (
 
                 //ImmSrc = 3'bxxx; // no immediate extension required
                 //ImmSrc = 3'b000;
-                RegWrite = 1'b0;
+                RegWrite <= 1'b0;
             end
 
             // S2 "Fetch_2" State
@@ -275,16 +399,16 @@ module controller (
 
                 // PCWrite = 1'b0;
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
-                AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-                MemWrite = 1'b0; // not writing into memory
-                IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
-                RegWrite = 1'b0;
+                AdrSrc <= 1'b0; // this connects the PC flip flop to the instruction memory
+                MemWrite <= 1'b0; // not writing into memory
+                IRWrite <= 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+                RegWrite <= 1'b0;
                 //ImmSrc = 3'b000; // no immediate extension required
                 // ACTION 2 - increment PC
-                ALUSrcA = 2'b00; // reset
-                ALUSrcB = 2'b00; // reset
+                ALUSrcA <= 2'b00; // reset
+                ALUSrcB <= 2'b00; // reset
                 //ALUControl = 3'b000; // add operation
-                ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+                ResultSrc <= 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
             end
 
             // S3 "Decode" State (For JAL, the jump target address is computed here) 
@@ -300,10 +424,10 @@ module controller (
 
  //               temp_data = 8'h03;
 
-                ALUSrcA = 2'b01; // oldPC
-                ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
+                ALUSrcA <= 2'b01; // oldPC
+                ALUSrcB <= 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
                 //ALUControl = ALUControlAluDec;
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             // S4 "MemAddr" State
@@ -327,17 +451,17 @@ module controller (
                 // figure 7.32 page 447
 
                 // PCWrite = 1'b0;
-                AdrSrc = 1'bx;
+                AdrSrc <= 1'bx;
                 //AdrSrc = 1'b0;
-                MemWrite = 1'b0;
-                IRWrite = 1'b0;
+                MemWrite <= 1'b0;
+                IRWrite <= 1'b0;
                 ResultSrc = 2'bxx;
                 //ALUControl = 3'b000; // add
-                ALUSrcB = 2'b01; // immediate sign extended
-                ALUSrcA = 2'b10; // register
+                ALUSrcB <= 2'b01; // immediate sign extended
+                ALUSrcA <= 2'b10; // register
                 //ImmSrc = 3'b000; // keep value from last state
                 //ImmSrc = ALUControlImmSrcDec;
-                RegWrite = 1'b0;
+                RegWrite <= 1'b0;
             end
 
             // S5 "MemRead" State
@@ -351,18 +475,18 @@ module controller (
 
                 // PCWrite = 1'b0;
 
-                ALUSrcA = 2'bxx;
-                ALUSrcB = 2'bxx;
+                ALUSrcA <= 2'bxx;
+                ALUSrcB <= 2'bxx;
                 //ALUControl = 3'bxxx;
 
                 // //ResultSrc = 2'b10; // ALUOut register to Result bus
-                ResultSrc = 2'b00;
+                ResultSrc <= 2'b00;
 
-                AdrSrc = 1'b1; // Result bus is connected to the memory addr port
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
+                AdrSrc <= 1'b1; // Result bus is connected to the memory addr port
+                RegWrite <= 1'b0;
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b000; // (lw)
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             // S6 "MemWB" State
@@ -378,14 +502,14 @@ module controller (
 
                 // PCWrite = 1'b0;
                 //AdrSrc = 1'bx;
-                MemWrite = 1'b0;
-                IRWrite = 1'b0;
-                ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
+                MemWrite <= 1'b0;
+                IRWrite <= 1'b0;
+                ResultSrc <= 2'b01; // take the value from the Data register and place it onto the result bus
                 //ALUControl = 3'bxxx;
-                ALUSrcB = 2'bxx;
-                ALUSrcA = 2'bxx;
+                ALUSrcB <= 2'bxx;
+                ALUSrcA <= 2'bxx;
                 //ImmSrc = 3'b000;
-                RegWrite = 1'b1;
+                RegWrite <= 1'b1;
             end
 
             // S7 "MemWrite" State
@@ -398,15 +522,15 @@ module controller (
   //              temp_data = 8'h07;
 
                 // PCWrite = 1'b0;
-                AdrSrc = 1'b1; // connect the result bus to the address line of the memory
-                MemWrite = 1'b1; // enable a write to memory
-                IRWrite = 1'b0;
-                ResultSrc = 2'b00; // place ALU out onto the result bus
+                AdrSrc <= 1'b1; // connect the result bus to the address line of the memory
+                MemWrite <= 1'b1; // enable a write to memory
+                IRWrite <= 1'b0;
+                ResultSrc <= 2'b00; // place ALU out onto the result bus
                 //ALUControl = 3'bxxx;
-                ALUSrcB = 2'bxx;
-                ALUSrcA = 2'bxx;
+                ALUSrcB <= 2'bxx;
+                ALUSrcA <= 2'bxx;
                 //ImmSrc = 3'b001;
-                RegWrite = 1'b0;
+                RegWrite <= 1'b0;
             end
 
             // S8 "ExecuteRState" State // execute R-Type instruction
@@ -420,14 +544,14 @@ module controller (
   //              temp_data = 8'h08;
 
                 // PCWrite = 1'b0;
-                ALUSrcA = 2'b10; // register
-                ALUSrcB = 2'b00; // register
-                ResultSrc = 2'b00;
-                AdrSrc = 1'b0;
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
+                ALUSrcA <= 2'b10; // register
+                ALUSrcB <= 2'b00; // register
+                ResultSrc <= 2'b00;
+                AdrSrc <= 1'b0;
+                RegWrite <= 1'b0;
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b000;
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             // S9 "ALUWriteBackState" State
@@ -440,15 +564,15 @@ module controller (
   //              temp_data = 8'h09;
 
                 // PCWrite = 1'b0;
-                ALUSrcA = 2'b00;
-                ALUSrcB = 2'b00;
+                ALUSrcA <= 2'b00;
+                ALUSrcB <= 2'b00;
                 //ALUControl = 3'b000;
-                ResultSrc = 2'b00; // Result bus is ALUOut flip flop
-                AdrSrc = 1'b0;
-                RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
-                MemWrite = 1'b0;
+                ResultSrc <= 2'b00; // Result bus is ALUOut flip flop
+                AdrSrc <= 1'b0;
+                RegWrite <= 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b000;
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             // A S10 "ExecuteI" State // execute I-Type instruction (XORI, ADDI, ...)
@@ -458,41 +582,27 @@ module controller (
                 // $display("");
                 // //$display("[CTRL.OUTPUT.EXECUTEI_STATE] op: %b, funct3: %b, funct7: %b, ALUControl: %d, newALUControl: %d, ALUSrcA: %d, ALUSrcB: %d", op, funct3, funct7, ALUControl, newALUControl, ALUSrcA, ALUSrcB);
                 // $display("[CTRL.OUTPUT.EXECUTEI_STATE]");
-
-
   //              temp_data = 8'h0A;
-
                 // PCWrite = 1'b0;
                 //IRWrite = 1'b0;
                 //ResultSrc = 2'b00;
-
                 // ALUSrcA = 2'bxx; // register
-
                 if (ALUSrcA == 2'b11) begin
-                    ALUSrcA = 2'b11; // constant 0 (32'b0)
+                    ALUSrcA <= 2'b11; // constant 0 (32'b0)
                 end else begin
-                     ALUSrcA = 2'b10; // register
+                     ALUSrcA <= 2'b10; // register
                 end
-
-                ALUSrcB = 2'b01; // immediate sign extended
-
-
-
+                ALUSrcB <= 2'b01; // immediate sign extended
                 // SNIP
-
                 // If you enable any of the signals below, this will trigger
                 // the ALU a second time and the second time it computes an
                 // unwanted value!
-
-                ResultSrc = 2'b00;
-                AdrSrc = 1'b0;
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
-
+                ResultSrc <= 2'b00;
+                AdrSrc <= 1'b0;
+                RegWrite <= 1'b0;
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b000; // Immediate sign extend
-
-                IRWrite = 1'b0;
-
+                IRWrite <= 1'b0;
                 // SNAP
             end
 
@@ -506,17 +616,17 @@ module controller (
   //              temp_data = 8'h0B;
 
                 //PCWrite = 1'b1; // Write into the PC register
-                AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
-                MemWrite = 1'b0;
-                IRWrite = 1'b0;
-                RegWrite = 1'b0;
+                AdrSrc <= 1'bx; // confuse the muxer so it does not perform any action
+                MemWrite <= 1'b0;
+                IRWrite <= 1'b0;
+                RegWrite <= 1'b0;
                 // compute PC + 4 which is the "link" operation
-                ALUSrcA = 2'b01; // oldPC
-                ALUSrcB = 2'b10; // hard coded 4
+                ALUSrcA <= 2'b01; // oldPC
+                ALUSrcB <= 2'b10; // hard coded 4
                 //ALUSrcB = 2'b01; // Immediate sign extended
                 //ImmSrc = 3'b011; // Immediate sign extend (J-Type)
                 //ALUControl = 3'b000; // add
-                ResultSrc = 2'b00; // ALUOut goes onto the result bus
+                ResultSrc <= 2'b00; // ALUOut goes onto the result bus
             end
 
             // C S12 "BEQ" State
@@ -529,15 +639,15 @@ module controller (
  //               temp_data = 8'h0C;
 
                 // PCWrite = 1'b0;
-                ALUSrcA = 2'b10; // register
-                ALUSrcB = 2'b00; // register
+                ALUSrcA <= 2'b10; // register
+                ALUSrcB <= 2'b00; // register
                 //ALUControl = 3'b001; // subtraction
-                ResultSrc = 2'b00; // Result bus is ALUOut flip flop
-                AdrSrc = 1'b0;
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
+                ResultSrc <= 2'b00; // Result bus is ALUOut flip flop
+                AdrSrc <= 1'b0;
+                RegWrite <= 1'b0;
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b000; // reuse the value from prior states
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
 
                 // if (Zero == 1)
                 // begin
@@ -585,15 +695,15 @@ module controller (
  //               temp_data = 8'h0E;
 
                 // PCWrite = 1'b0;
-                ALUSrcA = 2'b11; // new zero input
-                ALUSrcB = 2'b10; // sign extended immediate
+                ALUSrcA <= 2'b11; // new zero input
+                ALUSrcB <= 2'b10; // sign extended immediate
                 //ALUControl = 3'b000; // add
-                ResultSrc = 2'b00; // saved ALU out
-                AdrSrc = 1'b0;
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
+                ResultSrc <= 2'b00; // saved ALU out
+                AdrSrc <= 1'b0;
+                RegWrite <= 1'b0;
+                MemWrite <= 1'b0;
                 //ImmSrc = 3'b100; // LUI
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             // F S15
@@ -601,7 +711,7 @@ module controller (
             begin
  //               temp_data = 8'h0F;
 
-                IRWrite = 1'b0;
+                IRWrite <= 1'b0;
             end
 
             default:
@@ -611,7 +721,7 @@ module controller (
             end
         endcase
     end
-
+*/
     //
     // next state combinational logic
     //
@@ -628,7 +738,7 @@ module controller (
 
         if (resetn == 0)
         begin
-            next_state = FetchState_1;
+            next_state <= FetchState_1;
         end
         else
         begin
@@ -645,14 +755,14 @@ module controller (
                 //     $display("[controller] goto ResetState -> FetchState_1");
                 //     next_state = FetchState_1;
                 // end
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // S1 "Fetch_1" State
             FetchState_1:
             begin
                 $display("[controller] goto FetchState_1 -> DecodeState");
-                next_state = DecodeState;
+                next_state <= DecodeState;
             end
 
             // // S2 "Fetch_2" State
@@ -668,42 +778,42 @@ module controller (
                 if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
                     $display("[controller] goto DecodeState -> MemAddrState");
-                    next_state = MemAddrState; // 0x04
+                    next_state <= MemAddrState; // 0x04
                 end
                 else if (op == 7'b0110011) // R-Type
                 begin
                     $display("[controller] goto DecodeState -> ExecuteRState");
-                    next_state = ExecuteRState;
+                    next_state <= ExecuteRState;
                 end
                 else if (op == 7'b0010011) // I-Type ALU (xori, addi, ...)
                 begin
                     $display("[controller] goto DecodeState -> ExecuteIState");
-                    next_state = ExecuteIState; // 0x0A
+                    next_state <= ExecuteIState; // 0x0A
                 end
                 else if (op == 7'b1101111) // JAL
                 begin
                     $display("[controller] goto DecodeState -> JALState");
-                    next_state = JALState; // 0x0B
+                    next_state <= JALState; // 0x0B
                 end
                 else if (op == 7'b1100011) // BEQ // 7'b1100011 == 63dec
                 begin
                     $display("[controller] goto DecodeState -> BEQState");
-                    next_state = BEQState; // 0x0D
+                    next_state <= BEQState; // 0x0D
                 end
                 else if (op == 7'b0000000) // nop
                 begin
                     $display("[controller] goto DecodeState -> FetchState_1 for nop");
-                    next_state = FetchState_1;
+                    next_state <= FetchState_1;
                 end
                 else if (op == 7'b0110111) // lui
                 begin
                     $display("[controller] goto DecodeState -> LuiState for lui");
-                    next_state = LUI_STATE;
+                    next_state <= LUI_STATE;
                 end
                 else
                 begin
                     $display("[controller] goto DecodeState -> ErrorState");
-                    next_state = ErrorState;
+                    next_state <= ErrorState;
                 end
 
             end
@@ -714,17 +824,17 @@ module controller (
                 if (oldOp == 7'b0000011) // lw
                 begin
                     $display("[controller] goto MemAddrState -> MemReadState");
-                    next_state = MemReadState;
+                    next_state <= MemReadState;
                 end
                 else if (oldOp == 7'b0100011) // sw
                 begin
                     $display("[controller] goto MemAddrState -> MemWriteState");
-                    next_state = MemWriteState;
+                    next_state <= MemWriteState;
                 end
                 else
                 begin
                     $display("[controller] goto MemAddrState -> ErrorState");
-                    next_state = ErrorState;
+                    next_state <= ErrorState;
                 end
                 // if (op == 7'b0000011) // lw
                 // begin
@@ -747,49 +857,49 @@ module controller (
             MemReadState:
             begin
                 $display("[controller] goto MemReadState -> MemWBState");
-                next_state = MemWBState;
+                next_state <= MemWBState;
             end
 
             // S6 "MemWB" State
             MemWBState:
             begin
                 $display("[controller] goto MemWBState -> FetchState_1");
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // S7 "MemWrite" State
             MemWriteState:
             begin
                 $display("[controller] goto MemWriteState -> FetchState_1");
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // S8 "ExecuteR" State
             ExecuteRState:
             begin
                 $display("[controller] goto ExecuteRState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
+                next_state <= ALUWriteBackState;
             end
 
             // S9 "ALUWB" State
             ALUWriteBackState:
             begin
                 $display("[controller] goto ALUWriteBackState -> FetchState_1");
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // A S10 "ExecuteI" State // execute I-Type instruction
             ExecuteIState:
             begin
                 $display("[controller] goto ExecuteIState -> ALUWriteBackState");
-                next_state = ALUWriteBackState; //
+                next_state <= ALUWriteBackState; //
             end
 
             // B S11 "JAL" State
             JALState:
             begin
                 $display("[controller] goto JALState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
+                next_state <= ALUWriteBackState;
             end
 
             // C S12 "BEQ" State
@@ -799,34 +909,34 @@ module controller (
                 //next_state = BRANCH_TAKEN_CHECK;
 
                 $display("[controller] goto BEQState -> FetchState_1.");
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // D S13 "BRANCH_TAKEN_CHECK" State
             BRANCH_TAKEN_CHECK:
             begin
                 $display("[controller] goto BRANCH_TAKEN_CHECK -> FetchState_1.");
-                next_state = FetchState_1;
+                next_state <= FetchState_1;
             end
 
             // E S14 "LUI_STATE" State
             LUI_STATE:
             begin
                 $display("[controller] goto LUI_STATE -> ExecuteIState.");
-                next_state = ExecuteIState;
+                next_state <= ExecuteIState;
             end
 
             default:
             begin
                 $display("[controller] default goto default -> ErrorState");
                 //next_state = ErrorState;
-                next_state = ResetState;
+                next_state <= ResetState;
             end
 
         endcase
 
     end
-    end
+end
 
 
 endmodule
