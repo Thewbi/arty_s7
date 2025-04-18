@@ -170,3 +170,7 @@ https://github.com/github/gitignore/blob/main/community/Xilinx.gitignore
 */*/*/bd/*/ip/*/*.tcl
 hw_handoff
 ipshared
+vivado/riscv/riscv.runs/impl_1/top.bit
+vivado/riscv/riscv.runs/impl_1/gen_run.xml
+vivado/riscv/riscv.runs/impl_1/clockInfo.txt
+vivado/riscv/riscv.runs/synth_1/gen_run.xml
