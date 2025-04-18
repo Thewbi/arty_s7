@@ -2,7 +2,6 @@ module ram(
 
     // input
     input wire clk,
-//    input wire resetn,
 
     input wire we, // write enable
     input wire [31:0] a, // read/write address
@@ -10,15 +9,8 @@ module ram(
 
     // output
     output wire [31:0] rd//, // data read from memory
-//    output reg [31:0] toggle_value
 );
 
-    // initial
-    // begin
-    //     $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
-    // end
-
-    //reg [31:0] RAM[127:0];
     reg [31:0] RAM[64:0];
 
 /*
@@ -495,16 +487,6 @@ module ram(
 
     // RAM read must be immediate, combinatorial without clock!!!!!!!!!
     assign rd = RAM[a[31:0]];
-
-/*
-    always @(posedge clk)
-    begin
-        //rd = RAM[a[31:0]];
-        //rd = RAM[32'b0];
-        toggle_value = RAM[32'd60]; // memory mapped I/O for the green LED
-        //$display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
-    end
-*/
 
     // initial
     // begin

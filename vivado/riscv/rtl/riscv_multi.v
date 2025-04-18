@@ -16,12 +16,8 @@ module riscv_multi(
  //   output wire         tx_DataValid
 );
 
-    //wire [31:0]     Instr;
-    //wire            ALUSrc;
     wire            RegWrite;
-    //wire            Jump;
     wire            Zero;
-    //wire [31:0]     PC;
     wire [31:0]     ReadData;   // instruction memory
 
     wire PCWrite;
@@ -29,7 +25,6 @@ module riscv_multi(
     wire MemWrite;
     wire IRWrite;
 
-    // wire [31:0] ReadDData;  // data memory
     wire [1:0]      ResultSrc;
     wire [2:0]      ImmSrc;
     wire [2:0]      ALUControl;
@@ -37,19 +32,9 @@ module riscv_multi(
     wire [6:0]      op;
     wire [6:0]      oldOp;
     wire [2:0]      funct3;
-    //wire [6:0]      funct7;
     wire            funct7b5;
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
-
-    // this works
-    //assign tx_Data = PC;
-    //assign tx_Data = { 7'b0000000, clk }; // clock works!
-    //assign tx_Data = ALUSrcB[7:0]; // ERROR is always zero!
-    //assign tx_Data = { 7'bb0000000, resetn }; // reset works!
-    // assign tx_Data = { 1'b0, op }; // op from decoder works!
-
-    // assign tx_DataValid = 1'b1;
 
     controller ctr (
 
@@ -62,9 +47,7 @@ module riscv_multi(
         oldOp,
         funct3,
         funct7b5,
-        //funct7,
         Zero,           // ALU result is zero
-        //PC,             // current programm counter
         ReadData,
 
         // output
@@ -96,9 +79,7 @@ module riscv_multi(
         oldOp,
         funct3,
         funct7b5,
-        //funct7,
         Zero,
-        //PC,
         ReadData,       // instruction memory
 
         // input

@@ -1,7 +1,10 @@
 module extend(
+
+    // input
     input wire [31:0] instr,
     input wire [2:0] immsrc,
 
+    // output
     output reg [31:0] immext
 );
 

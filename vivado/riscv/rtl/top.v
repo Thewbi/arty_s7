@@ -1,6 +1,5 @@
 module top(
     input wire CLK12MHZ,
-    //input wire resetn,
     output reg led_green,
     // UART lines
 //    input ftdi_rx,
@@ -30,11 +29,7 @@ module top(
 
     always @(posedge CLK12MHZ)
     begin
-        //led_green = toggle_value[0];
         led_green = |toggle_value;
-        //led_green = slow_clock;
-        
-        //led_green = slow_clock;
         D3 = slow_clock;
     end
     
